@@ -5,6 +5,7 @@
  */
 package Server1;
 
+import Server1.Metodos.MetodosDB;
 import com.example.rpagv2.DatosAlerta;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -118,7 +119,7 @@ public class SocketServer extends Thread{
             //objectInputStream = new ObjectInputStream(in);
             //System.out.println("objectInputStream listo");
             
-            objectOutputStream.writeObject(ObtenerLista());
+            objectOutputStream.writeObject(MetodosDB.RecuperarListaAlertas());
             objectOutputStream.flush();
             System.out.println("Lista Enviada");
         } catch(IOException e) {
@@ -137,7 +138,7 @@ public class SocketServer extends Thread{
             DatosAlerta alerta = (DatosAlerta) objectInputStream.readObject();
             System.out.println("Recibido: " + alerta);
             
-            ActualizarLista(alerta);
+            MetodosDB.IngresarAlerta(alerta);
             
         } catch (IOException e){
             System.err.println(e);
@@ -145,13 +146,5 @@ public class SocketServer extends Thread{
             Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    ArrayList<DatosAlerta> ObtenerLista() {
-        ArrayList<DatosAlerta> lista = main.listaAlertas;
-        return lista;
-    }
-    void ActualizarLista(DatosAlerta alerta) {
-        main.listaAlertas.add(alerta);
-        
-    }
+     
 }

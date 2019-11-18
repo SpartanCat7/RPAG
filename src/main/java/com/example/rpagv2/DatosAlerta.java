@@ -30,4 +30,9 @@ public class DatosAlerta implements java.io.Serializable {
         this.fecha = fecha;
     }
 
+    public DatosAlerta() {
+    }
+    
+    
+
 }

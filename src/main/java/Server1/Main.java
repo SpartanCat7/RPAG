@@ -5,12 +5,14 @@
  */
 package Server1;
 
+import Server1.Metodos.MetodosDB;
 import com.example.rpagv2.ClaseAlerta;
 import com.example.rpagv2.DatosAlerta;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.xml.crypto.Data;
 
 
 /**
@@ -67,9 +69,9 @@ public class Main {
     ClaseAlerta claseCorte = new ClaseAlerta(8, "Corte Electrico", 88, "icon_corte");
     
     void VariablesTemporales() {
-        //listaAlertas.add(new JavaAlerta(1001, 2001, -17.3749, -66.1583, "Accidente", new Date()));
-        listaAlertas.add(new DatosAlerta(1002, 2002, -17.3775, -66.1600, claseAccidente.id, new Date()));
-        //listaAlertas.add(new JavaAlerta(1003, 2003, 3003, 4003, "alerta3", new Date()));
+        
+        //listaAlertas.add(new DatosAlerta(1002, 2002, -17.3775, -66.1600, claseAccidente.id, new Date()));
+        MetodosDB.IngresarAlerta(new DatosAlerta(1002, 2002, -17.3775, -66.1600, claseAccidente.id, new Date()));
     }
     
     
