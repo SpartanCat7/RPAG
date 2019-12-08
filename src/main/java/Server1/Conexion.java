@@ -15,18 +15,22 @@ import java.sql.SQLException;
  */
 public class Conexion {
     private Connection conn;
-    //private static final String driver ="com.mysql.jdbc.Driver";
+    private static final String driver ="com.mysql.cj.jdbc.Driver";
     private static final String user="root";
     private static final String password ="";
-    private static final String url="jdbc:mysql://localhost:3306/rpag_db?autoReconnect=true&useSSL=false&maxReconnects=3";
+    private static final String url="jdbc:mysql://localhost:3306/rpag_db?autoReconnect=true&useSSL=false&maxReconnects=3&serverTimezone=UTC";
+    //private static final String url="jdbc:mysql://localhost:3306/rpag_db";
     public int contcon=0;
     public Conexion() throws SQLException, ClassNotFoundException
     {
         //System.out.println ("Se hizo conexion "+contcon);
         conn=null;
         try{
-            //Class.forName(driver);
+            
+            Class.forName(driver);
+            System.out.println("Estableciendo Conexion a DB...");
             conn=DriverManager.getConnection(url, user, password);
+            System.out.println("Conexion a DB establecida");
             if(conn!=null)
             {
                 //System.out.println(" conec establecida");contcon++;

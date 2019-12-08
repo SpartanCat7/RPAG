@@ -6,10 +6,14 @@
 package Server1;
 
 import Server1.Metodos.MetodosDB;
+import com.example.rpagv2.Comentario;
+import com.example.rpagv2.Confirmacion;
 import com.example.rpagv2.DatosAlerta;
+import com.example.rpagv2.PackDatos;
+import com.example.rpagv2.Reporte;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+//import java.io.DataInputStream;
+//import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,7 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,6 +86,21 @@ public class SocketServer extends Thread{
                         RecibirAlerta();
                         break;
                     }
+                    case "Confirmacion": {
+                        System.out.println("Metodo RecibirConfirmacion()");
+                        RecibirConfirmacion();
+                        break;
+                    }
+                    case "Reporte": {
+                        System.out.println("Metodo RecibirReporte()");
+                        RecibirReporte();
+                        break;
+                    }
+                    case "Comentario": {
+                        System.out.println("Metodo RecibirReporte()");
+                        RecibirComentario();
+                        break;
+                    }
                 }
             }
             
@@ -113,15 +132,24 @@ public class SocketServer extends Thread{
     
     void DevolverLista() {
         try {
+            //objectInputStream = new ObjectInputStream(in);
+            //System.out.println("objectInputStream listo");
+            PackDatos packDatos = new PackDatos();
+            
+            packDatos.listaDatosAlertas = MetodosDB.RecuperarListaAlertas();
+            System.out.println("listaDatosAlertas recuperada");
+            packDatos.listaConfirmaciones = MetodosDB.RecuperarListaConfirmaciones();
+            System.out.println("listaConfirmaciones recuperada");
+            packDatos.listaReportes = MetodosDB.RecuperarListaReportes();
+            System.out.println("listaReportes recuperada");
+            packDatos.listaComentarios = MetodosDB.RecuperarListaComentarios();
+            System.out.println("listaComentarios recuperada");
             
             objectOutputStream = new ObjectOutputStream(out);
             System.out.println("objectOutputStream listo");
-            //objectInputStream = new ObjectInputStream(in);
-            //System.out.println("objectInputStream listo");
-            
-            objectOutputStream.writeObject(MetodosDB.RecuperarListaAlertas());
+            objectOutputStream.writeObject(packDatos);
             objectOutputStream.flush();
-            System.out.println("Lista Enviada");
+            System.out.println("Listas Enviadas");
         } catch(IOException e) {
             System.err.println(e);
         }
@@ -139,6 +167,66 @@ public class SocketServer extends Thread{
             System.out.println("Recibido: " + alerta);
             
             MetodosDB.IngresarAlerta(alerta);
+            
+        } catch (IOException e){
+            System.err.println(e);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    void RecibirConfirmacion() {
+        try {
+            
+            objectInputStream = new ObjectInputStream(in);
+            System.out.println("objectInputStream listo");
+            objectOutputStream = new ObjectOutputStream(out);
+            System.out.println("objectOutputStream listo");
+            
+            Confirmacion confirmacion = (Confirmacion) objectInputStream.readObject();
+            System.out.println("Recibido: " + confirmacion);
+            
+            MetodosDB.IngresarConfirmacion(confirmacion);
+            
+        } catch (IOException e){
+            System.err.println(e);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    void RecibirReporte() {
+        try {
+            
+            objectInputStream = new ObjectInputStream(in);
+            System.out.println("objectInputStream listo");
+            objectOutputStream = new ObjectOutputStream(out);
+            System.out.println("objectOutputStream listo");
+            
+            Reporte reporte = (Reporte) objectInputStream.readObject();
+            System.out.println("Recibido: " + reporte);
+            
+            MetodosDB.IngresarReporte(reporte);
+            
+        } catch (IOException e){
+            System.err.println(e);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    void RecibirComentario() {
+        try {
+            
+            objectInputStream = new ObjectInputStream(in);
+            System.out.println("objectInputStream listo");
+            objectOutputStream = new ObjectOutputStream(out);
+            System.out.println("objectOutputStream listo");
+            
+            Comentario comentario = (Comentario) objectInputStream.readObject();
+            System.out.println("Recibido: " + comentario);
+            
+            MetodosDB.IngresarComentario(comentario);
             
         } catch (IOException e){
             System.err.println(e);

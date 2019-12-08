@@ -36,7 +36,7 @@ public class Main {
     void IniciarEscucha() {
         System.out.println("Server1.Main.IniciarEscucha()");
         ServerSocket server = null;
-        VariablesTemporales();
+        //VariablesTemporales();
         
         try {
             server = new ServerSocket(PORT_NUMBER);
@@ -73,7 +73,5 @@ public class Main {
         //listaAlertas.add(new DatosAlerta(1002, 2002, -17.3775, -66.1600, claseAccidente.id, new Date()));
         MetodosDB.IngresarAlerta(new DatosAlerta(1002, 2002, -17.3775, -66.1600, claseAccidente.id, new Date()));
     }
-    
-    
     
 }

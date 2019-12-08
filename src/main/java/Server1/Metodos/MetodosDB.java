@@ -6,16 +6,18 @@
 package Server1.Metodos;
 
 import Server1.Conexion;
+import com.example.rpagv2.Comentario;
+import com.example.rpagv2.Confirmacion;
 import com.example.rpagv2.DatosAlerta;
+import com.example.rpagv2.Reporte;
 import java.awt.HeadlessException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -25,7 +27,7 @@ import javax.swing.JOptionPane;
 public class MetodosDB {
 
     public static int IngresarAlerta(DatosAlerta alerta) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("IngresarAlerta()");
         int res = 0;
         Conexion CON = null;
         PreparedStatement PS;
@@ -59,7 +61,7 @@ public class MetodosDB {
             }*/
             
             if(res > 0){
-                JOptionPane.showMessageDialog(null,"registro guardado con exito");
+                System.out.println("Comentario guardado con exito");
             }
             
         }catch(HeadlessException|SQLException e){
@@ -75,6 +77,7 @@ public class MetodosDB {
     
     public static ArrayList<DatosAlerta> RecuperarListaAlertas(){
         
+        System.out.println("RecuperarListaAlertas()");
         ArrayList<DatosAlerta> listaAlertas = new ArrayList<>();
         
         Conexion CON = null;
@@ -99,7 +102,7 @@ public class MetodosDB {
                 alerta.latitud = RS.getDouble(3);
                 alerta.longitud = RS.getDouble(4);
                 alerta.clase_id = RS.getInt(5);
-                alerta.fecha = RS.getDate(6);
+                alerta.fecha = new Date(RS.getDate(6).getTime());
                 
                 listaAlertas.add(alerta);
             }
@@ -115,7 +118,268 @@ public class MetodosDB {
         
         return listaAlertas;
     }
+
+    public static int IngresarConfirmacion(Confirmacion confirmacion) {
+        System.out.println("IngresarConfirmacion()");
+
+        int res = 0;
+        Conexion CON = null;
+        PreparedStatement PS;
+        //ResultSet RS;
+        String SQL_InsertarAlerta = "INSERT INTO confirmacion(id_alerta,id_usuario,fecha) VALUES (?,?,?)";
+        
+        try {
+            CON = new Conexion();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(MetodosDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try{
+            PS=CON.getConnection().prepareStatement(SQL_InsertarAlerta);
+            //PS=CON.getConnection().prepareStatement(SQL_INSERTAR, Statement.RETURN_GENERATED_KEYS);
+            java.sql.Date sqlDate = new java.sql.Date(confirmacion.fecha.getTime()); //PS=(PreparedStatement) CON.getConnection().prepareStatement(SQL_INSERTAR);
+            
+            PS.setInt(1, confirmacion.id_alerta);
+            PS.setInt(2, confirmacion.id_usuario);
+            PS.setDate(3, sqlDate);
+            res = PS.executeUpdate();
+            
+            /* Obtiene los id de las alertas generadas en la DB, innecesario por ahora
+            ResultSet rs = PS.getGeneratedKeys();
+            int newId;
+            if (rs.next()) {
+                newId = rs.getInt(1);
+            }*/
+            
+            if(res > 0){
+                System.out.println("Comentario guardado con exito");
+            }
+            
+        }catch(HeadlessException|SQLException e){
+            System.err.println("error al guardar datos: "+e.getMessage());
+        }finally{
+            PS=null;
+            CON.disconnect();
+        }
+        return res;
+    }
     
+    public static ArrayList<Confirmacion> RecuperarListaConfirmaciones(){
+        System.out.println("RecuperarListaConfirmaciones()");
+        
+        ArrayList<Confirmacion> listaConfirmaciones = new ArrayList<>();
+        
+        Conexion CON = null;
+        PreparedStatement PS;
+        ResultSet RS;
+        String SQL_MostrarAlertas = "SELECT * FROM confirmacion";
+        
+        try {
+            CON = new Conexion();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(MetodosDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try{
+            PS = CON.getConnection().prepareStatement(SQL_MostrarAlertas);
+            RS = PS.executeQuery();
+
+            while(RS.next()){
+                Confirmacion confirmacion = new Confirmacion();
+                confirmacion.id = RS.getInt(1);
+                confirmacion.id_alerta = RS.getInt(2);
+                confirmacion.id_usuario = RS.getInt(3);
+                confirmacion.fecha = new Date(RS.getDate(4).getTime());
+                
+                listaConfirmaciones.add(confirmacion);
+            }
+        }
+        catch(SQLException e){
+            System.err.println("Error: " + e.getMessage());
+        }
+        finally{
+            PS = null;
+            RS = null;
+            CON.disconnect();
+        }
+        
+        return listaConfirmaciones;
+    }
+
+    public static int IngresarReporte(Reporte reporte) {
+        System.out.println("IngresarReporte()");
+        int res = 0;
+        Conexion CON = null;
+        PreparedStatement PS;
+        //ResultSet RS;
+        String SQL_InsertarAlerta = "INSERT INTO reportes(id_alerta,id_usuario,fecha) VALUES (?,?,?)";
+        
+        try {
+            CON = new Conexion();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(MetodosDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try{
+            PS=CON.getConnection().prepareStatement(SQL_InsertarAlerta);
+            //PS=CON.getConnection().prepareStatement(SQL_INSERTAR, Statement.RETURN_GENERATED_KEYS);
+            java.sql.Date sqlDate = new java.sql.Date(reporte.fecha.getTime()); //PS=(PreparedStatement) CON.getConnection().prepareStatement(SQL_INSERTAR);
+            
+            PS.setInt(1, reporte.id_alerta);
+            PS.setInt(2, reporte.id_usuario);
+            PS.setDate(3, sqlDate);
+            res = PS.executeUpdate();
+            
+            /* Obtiene los id de las alertas generadas en la DB, innecesario por ahora
+            ResultSet rs = PS.getGeneratedKeys();
+            int newId;
+            if (rs.next()) {
+                newId = rs.getInt(1);
+            }*/
+            
+            if(res > 0){
+                System.out.println("Reporte guardado con exito");
+            }
+            
+        }catch(HeadlessException|SQLException e){
+            System.err.println("error al guardar datos: "+e.getMessage());
+        }finally{
+            PS=null;
+            CON.disconnect();
+        }
+        return res;
+    }
     
+    public static ArrayList<Reporte> RecuperarListaReportes(){
+        System.out.println("RecuperarListaReportes()");
+
+        ArrayList<Reporte> listaReportes = new ArrayList<>();
+        
+        Conexion CON = null;
+        PreparedStatement PS;
+        ResultSet RS;
+        String SQL_MostrarAlertas = "SELECT * FROM reportes";
+        
+        try {
+            CON = new Conexion();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(MetodosDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try{
+            PS = CON.getConnection().prepareStatement(SQL_MostrarAlertas);
+            RS = PS.executeQuery();
+
+            while(RS.next()){
+                Reporte reporte = new Reporte();
+                reporte.id = RS.getInt(1);
+                reporte.id_alerta = RS.getInt(2);
+                reporte.id_usuario = RS.getInt(3);
+                reporte.fecha = new Date(RS.getDate(4).getTime());
+                
+                listaReportes.add(reporte);
+            }
+        }
+        catch(SQLException e){
+            System.err.println("Error: " + e.getMessage());
+        }
+        finally{
+            PS = null;
+            RS = null;
+            CON.disconnect();
+        }
+        
+        return listaReportes;
+    }
     
+    public static int IngresarComentario(Comentario comentario) {
+        System.out.println("IngresarConfirmacion()");
+
+        int res = 0;
+        Conexion CON = null;
+        PreparedStatement PS;
+        //ResultSet RS;
+        String SQL_InsertarAlerta = "INSERT INTO comentarios(id_alerta,id_usuario,fecha,texto) VALUES (?,?,?,?)";
+        
+        try {
+            CON = new Conexion();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(MetodosDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try{
+            PS=CON.getConnection().prepareStatement(SQL_InsertarAlerta);
+            //PS=CON.getConnection().prepareStatement(SQL_INSERTAR, Statement.RETURN_GENERATED_KEYS);
+            java.sql.Date sqlDate = new java.sql.Date(comentario.fecha.getTime()); //PS=(PreparedStatement) CON.getConnection().prepareStatement(SQL_INSERTAR);
+            
+            PS.setInt(1, comentario.id_alerta);
+            PS.setInt(2, comentario.id_usuario);
+            PS.setDate(3, sqlDate);
+            PS.setString(4, comentario.texto);
+            
+            res = PS.executeUpdate();
+            
+            /* Obtiene los id de las entradas generadas en la DB, innecesario por ahora
+            ResultSet rs = PS.getGeneratedKeys();
+            int newId;
+            if (rs.next()) {
+                newId = rs.getInt(1);
+            }*/
+            
+            if(res > 0){
+                System.out.println("Comentario guardado con exito");
+                //JOptionPane.showMessageDialog(null,"comentario guardado con exito");
+            }
+            
+        }catch(HeadlessException|SQLException e){
+            System.err.println("error al guardar datos: " + e.getMessage());
+        }finally{
+            PS=null;
+            CON.disconnect();
+        }
+        return res;
+    }
+    
+    public static ArrayList<Comentario> RecuperarListaComentarios(){
+        System.out.println("RecuperarListaReportes()");
+
+        ArrayList<Comentario> listaComentarios = new ArrayList<>();
+        
+        Conexion CON = null;
+        PreparedStatement PS;
+        ResultSet RS;
+        String SQL_MostrarAlertas = "SELECT * FROM comentarios";
+        
+        try {
+            CON = new Conexion();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(MetodosDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try{
+            PS = CON.getConnection().prepareStatement(SQL_MostrarAlertas);
+            RS = PS.executeQuery();
+
+            while(RS.next()){
+                Comentario comentario = new Comentario();
+                comentario.id = RS.getInt(1);
+                comentario.id_alerta = RS.getInt(2);
+                comentario.id_usuario = RS.getInt(3);
+                comentario.fecha = new Date(RS.getDate(4).getTime());
+                comentario.texto = RS.getString(5);
+                
+                listaComentarios.add(comentario);
+            }
+        }
+        catch(SQLException e){
+            System.err.println("Error: " + e.getMessage());
+        }
+        finally{
+            PS = null;
+            RS = null;
+            CON.disconnect();
+        }
+        
+        return listaComentarios;
+    }
 }

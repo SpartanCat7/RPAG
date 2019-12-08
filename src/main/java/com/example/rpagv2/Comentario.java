@@ -9,11 +9,13 @@ import java.util.Date;
 
 /**
  *
- * @author spart
+ * @author SpartanCat7
  */
-public class Confirmacion implements java.io.Serializable {
+public class Comentario implements java.io.Serializable {
     public int id;
     public int id_alerta;
     public int id_usuario;
     public Date fecha;
+    
+    public String texto;
 }
