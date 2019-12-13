@@ -9,26 +9,34 @@ import Server1.Conexion;
 import com.example.rpagv2.Comentario;
 import com.example.rpagv2.Confirmacion;
 import com.example.rpagv2.DatosAlerta;
+import com.example.rpagv2.Imagen;
 import com.example.rpagv2.Reporte;
 import java.awt.HeadlessException;
+import java.io.File;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.apache.commons.io.FileUtils;
 
 /**
  *
  * @author spart
  */
 public class MetodosDB {
+    
+    public static String PIC_DIRECTORIO = "../RPAG_Pics";
 
     public static int IngresarAlerta(DatosAlerta alerta) {
         System.out.println("IngresarAlerta()");
         int res = 0;
+        int newId = 0;
         Conexion CON = null;
         PreparedStatement PS;
         //ResultSet RS;
@@ -41,7 +49,7 @@ public class MetodosDB {
         }
         
         try{
-            PS=CON.getConnection().prepareStatement(SQL_InsertarAlerta);
+            PS=CON.getConnection().prepareStatement(SQL_InsertarAlerta, Statement.RETURN_GENERATED_KEYS);
             //PS=CON.getConnection().prepareStatement(SQL_INSERTAR, Statement.RETURN_GENERATED_KEYS);
             java.sql.Date sqlDate = new java.sql.Date(alerta.fecha.getTime()); //PS=(PreparedStatement) CON.getConnection().prepareStatement(SQL_INSERTAR);
             
@@ -53,12 +61,12 @@ public class MetodosDB {
             PS.setDate(6, sqlDate);
             res = PS.executeUpdate();
             
-            /* Obtiene los id de las alertas generadas en la DB, innecesario por ahora
+            // Obtiene los id de las alertas generadas en la DB
             ResultSet rs = PS.getGeneratedKeys();
-            int newId;
+            
             if (rs.next()) {
                 newId = rs.getInt(1);
-            }*/
+            }
             
             if(res > 0){
                 System.out.println("Comentario guardado con exito");
@@ -70,7 +78,7 @@ public class MetodosDB {
             PS=null;
             CON.disconnect();
         }
-        return res;
+        return newId;
     }
 
     
@@ -381,5 +389,128 @@ public class MetodosDB {
         }
         
         return listaComentarios;
+    }
+    
+    public static int IngresarImagen(Imagen imagen) throws IOException {
+        System.out.println("IngresarImagen()");
+
+        System.out.println("Recibido: " + imagen.nombre);
+        System.out.println("Bitmap: " + imagen.bitmap.length);
+            
+        File directorio = new File(PIC_DIRECTORIO);
+        if(directorio.mkdirs()){
+            System.out.println("Directorio creado");
+        }
+        
+        
+        
+        File file = new File(directorio, imagen.nombre);
+        if(file.createNewFile()){
+            FileUtils.writeByteArrayToFile(file, imagen.bitmap);
+        }
+        
+        int res = 0;
+        Conexion CON = null;
+        PreparedStatement PS;
+        //ResultSet RS;
+        String SQL_InsertarAlerta = "INSERT INTO imagenes(nombre,id_alerta,id_usuario,fecha,bitmap) VALUES (?,?,?,?,?)";
+        
+        try {
+            CON = new Conexion();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(MetodosDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try{
+            PS=CON.getConnection().prepareStatement(SQL_InsertarAlerta);
+            //PS=CON.getConnection().prepareStatement(SQL_INSERTAR, Statement.RETURN_GENERATED_KEYS);
+            java.sql.Date sqlDate = new java.sql.Date(imagen.fecha.getTime()); //PS=(PreparedStatement) CON.getConnection().prepareStatement(SQL_INSERTAR);
+            
+            PS.setString(1, imagen.nombre);
+            PS.setInt(2, imagen.id_alerta);
+            PS.setInt(3, imagen.id_usuario);
+            PS.setDate(4, sqlDate);
+            PS.setInt(5, 0);
+            
+            System.out.println("Query: " + PS.toString());
+            
+            res = PS.executeUpdate();
+            
+            /* Obtiene los id de las entradas generadas en la DB, innecesario por ahora
+            ResultSet rs = PS.getGeneratedKeys();
+            int newId;
+            if (rs.next()) {
+                newId = rs.getInt(1);
+            }*/
+            
+            if(res > 0){
+                System.out.println("Comentario guardado con exito");
+                //JOptionPane.showMessageDialog(null,"comentario guardado con exito");
+            }
+            
+        }catch(HeadlessException|SQLException e){
+            System.err.println("error al guardar datos: " + e.getMessage());
+        }finally{
+            PS=null;
+            CON.disconnect();
+        }
+        return res;
+    }
+    
+    public static ArrayList<Imagen> RecuperarListaImagenes(){
+        System.out.println("RecuperarListaImagenes()");
+
+        ArrayList<Imagen> listaImagenes = new ArrayList<>();
+        
+        Conexion CON = null;
+        PreparedStatement PS;
+        ResultSet RS;
+        String SQL_MostrarAlertas = "SELECT * FROM imagenes";
+        
+        try {
+            CON = new Conexion();
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(MetodosDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try{
+            PS = CON.getConnection().prepareStatement(SQL_MostrarAlertas);
+            RS = PS.executeQuery();
+
+            while(RS.next()){
+                Imagen imagen = new Imagen();
+                imagen.id = RS.getInt(1);
+                imagen.nombre = RS.getString(2);
+                imagen.id_alerta = RS.getInt(3);
+                imagen.id_usuario = RS.getInt(4);
+                imagen.fecha = new Date(RS.getDate(5).getTime());
+                //imagen.bitmap = null;
+                imagen.bitmap = RecuperarImagen(imagen.nombre);
+                
+                listaImagenes.add(imagen);
+            }
+        }
+        catch(SQLException e){
+            System.err.println("Error: " + e.getMessage());
+        }
+        finally{
+            PS = null;
+            RS = null;
+            CON.disconnect();
+        }
+        
+        return listaImagenes;
+    }
+    
+    public static byte[] RecuperarImagen(String nombre){
+        byte[] imagen = null;
+        try {
+            File file = new File(PIC_DIRECTORIO,nombre);
+            imagen = FileUtils.readFileToByteArray(file);
+        } catch (IOException ex) {
+            Logger.getLogger(MetodosDB.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return imagen;
     }
 }
