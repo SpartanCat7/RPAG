@@ -64,9 +64,7 @@ public class SocketServer extends Thread{
             //dataInputStream = new DataInputStream(in);
             //dataOutputStream = new DataOutputStream(out);
             
-            
             System.out.println("Streams establecidos");
-            
             
             br = new BufferedReader(new InputStreamReader(in));
             System.out.println("br establecido");
@@ -121,16 +119,18 @@ public class SocketServer extends Thread{
         } */finally {
             try {
                 System.out.println("Cerrando conexion");
-                in.close();
-                out.close();
-                //dataInputStream.close();
-                //dataOutputStream.close();
                 if(objectInputStream != null) {
                     objectInputStream.close();
                 }
+                if(objectOutputStream != null) {
+                    objectOutputStream.close();
+                }
+                in.close();
+                out.close();
+                if(!socket.isClosed()){
+                    socket.close();
+                }
                 
-                objectOutputStream.close();
-                socket.close();
                 System.out.println("Conexion cerrada");
             } catch (IOException ex) {
                 ex.printStackTrace();

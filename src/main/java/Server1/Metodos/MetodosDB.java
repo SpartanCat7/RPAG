@@ -75,7 +75,10 @@ public class MetodosDB {
             System.err.println("error al guardar datos: "+e.getMessage());
         }finally{
             PS=null;
-            CON.disconnect();
+            if(CON != null){
+                CON.disconnect();
+            }
+            
         }
         return newId;
     }
@@ -166,7 +169,9 @@ public class MetodosDB {
             System.err.println("error al guardar datos: "+e.getMessage());
         }finally{
             PS=null;
-            CON.disconnect();
+            if(CON != null){
+                CON.disconnect();
+            }
         }
         return res;
     }
@@ -207,7 +212,9 @@ public class MetodosDB {
         finally{
             PS = null;
             RS = null;
-            CON.disconnect();
+            if(CON != null){
+                CON.disconnect();
+            }
         }
         
         return listaConfirmaciones;
@@ -225,7 +232,7 @@ public class MetodosDB {
             CON = new Conexion();
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(MetodosDB.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
         
         try{
             PS=CON.getConnection().prepareStatement(SQL_InsertarAlerta);
@@ -252,7 +259,9 @@ public class MetodosDB {
             System.err.println("error al guardar datos: "+e.getMessage());
         }finally{
             PS=null;
-            CON.disconnect();
+            if(CON != null){
+                CON.disconnect();
+            }
         }
         return res;
     }
@@ -293,7 +302,9 @@ public class MetodosDB {
         finally{
             PS = null;
             RS = null;
-            CON.disconnect();
+            if(CON != null){
+                CON.disconnect();
+            }
         }
         
         return listaReportes;
@@ -342,7 +353,9 @@ public class MetodosDB {
             System.err.println("error al guardar datos: " + e.getMessage());
         }finally{
             PS=null;
-            CON.disconnect();
+            if(CON != null){
+                CON.disconnect();
+            }
         }
         return res;
     }
@@ -384,7 +397,9 @@ public class MetodosDB {
         finally{
             PS = null;
             RS = null;
-            CON.disconnect();
+            if(CON != null){
+                CON.disconnect();
+            }
         }
         
         return listaComentarios;
@@ -451,7 +466,9 @@ public class MetodosDB {
             System.err.println("error al guardar datos: " + e.getMessage());
         }finally{
             PS=null;
-            CON.disconnect();
+            if(CON != null){
+                CON.disconnect();
+            }
         }
         return res;
     }
@@ -495,7 +512,9 @@ public class MetodosDB {
         finally{
             PS = null;
             RS = null;
-            CON.disconnect();
+            if(CON != null){
+                CON.disconnect();
+            }
         }
         
         return listaImagenes;

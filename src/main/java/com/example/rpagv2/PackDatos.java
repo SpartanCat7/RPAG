@@ -12,6 +12,8 @@ import java.util.ArrayList;
  * @author SpartanCat7
  */
 public class PackDatos implements java.io.Serializable {
+    public double latitude, longitude;
+    
     public ArrayList<DatosAlerta> listaDatosAlertas;
     public ArrayList<Confirmacion> listaConfirmaciones;
     public ArrayList<Reporte> listaReportes;
