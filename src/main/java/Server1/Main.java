@@ -6,8 +6,8 @@
 package Server1;
 
 import Server1.Metodos.MetodosDB;
-import com.example.rpagv2.ClaseAlerta;
-import com.example.rpagv2.DatosAlerta;
+import edu.integrator.rpagv2.ClaseAlerta;
+import edu.integrator.rpagv2.DatosAlerta;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;

@@ -18,7 +18,7 @@ public class Conexion {
     private static final String driver ="com.mysql.cj.jdbc.Driver";
     private static final String user="root";
     private static final String password ="";
-    private static final String url="jdbc:mysql://localhost:3306/rpag_db?autoReconnect=true&useSSL=false&maxReconnects=3&serverTimezone=UTC";
+    private static final String url="jdbc:mysql://localhost:3306/rpag_db?autoReconnect=true&useSSL=false&maxReconnects=10&serverTimezone=UTC";
     //private static final String url="jdbc:mysql://localhost:3306/rpag_db";
     public int contcon=0;
     public Conexion() throws SQLException, ClassNotFoundException
@@ -29,18 +29,18 @@ public class Conexion {
             
             Class.forName(driver);
             System.out.println("Estableciendo Conexion a DB...");
-            conn=DriverManager.getConnection(url, user, password);
-            System.out.println("Conexion a DB establecida");
+            conn = DriverManager.getConnection(url, user, password);
+            
             if(conn!=null)
             {
-                //System.out.println(" conec establecida");contcon++;
+                System.out.println("Conexion a DB establecida");
             }          
                 
         }
         catch(/*ClassNotFoundException | */SQLException e)
         {
-            System.out.println("error" +e);
-            System.exit(0);
+            System.err.println("Error: could not stablish connection to the database");
+            e.printStackTrace();
         }
         
     }

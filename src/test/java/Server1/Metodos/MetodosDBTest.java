@@ -5,11 +5,11 @@
  */
 package Server1.Metodos;
 
-import com.example.rpagv2.Comentario;
-import com.example.rpagv2.Confirmacion;
-import com.example.rpagv2.DatosAlerta;
-import com.example.rpagv2.Imagen;
-import com.example.rpagv2.Reporte;
+import edu.integrator.rpagv2.Comentario;
+import edu.integrator.rpagv2.Confirmacion;
+import edu.integrator.rpagv2.DatosAlerta;
+import edu.integrator.rpagv2.Imagen;
+import edu.integrator.rpagv2.Reporte;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

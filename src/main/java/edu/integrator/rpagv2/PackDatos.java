@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.example.rpagv2;
+package edu.integrator.rpagv2;
 
 import java.util.ArrayList;
 

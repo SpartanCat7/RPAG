@@ -3,19 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.example.rpagv2;
+package edu.integrator.rpagv2;
 
 import java.util.Date;
 
 /**
  *
- * @author SpartanCat7
+ * @author spart
  */
-public class Comentario implements java.io.Serializable {
+public class Reporte implements java.io.Serializable {
     public int id;
     public int id_alerta;
     public int id_usuario;
     public Date fecha;
-    
-    public String texto;
 }

@@ -1,4 +1,4 @@
-package com.example.rpagv2;
+package edu.integrator.rpagv2;
 
 public class ClaseAlerta {
     public int id;
